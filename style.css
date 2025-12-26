@@ -1,0 +1,229 @@
+* { 
+    box-sizing: border-box; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+body {
+    /* NỀN ĐẸP: Gradient chuyển động */
+    background: linear-gradient(-45deg, #1e3c72, #2a5298, #6d1b7b, #c31432);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+h1 { 
+    margin-bottom: 30px; 
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5); 
+    font-size: 3em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.main-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* --- CẤU HÌNH VÒNG QUAY --- */
+.wheel-container {
+    position: relative; /* Quan trọng để căn chỉnh nút ở giữa */
+    width: 500px;
+    height: 500px;
+    max-width: 90vw;
+    max-height: 90vw;
+    border-radius: 50%;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Hiệu ứng quay */
+}
+
+/* Mũi tên chỉ định */
+.pointer {
+    position: absolute;
+    top: 50%;
+    right: -25px; /* Nằm bên phải ngoài vòng quay */
+    transform: translateY(-50%);
+    width: 0; 
+    height: 0; 
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-right: 50px solid #fff;
+    filter: drop-shadow(-4px 0 4px rgba(0,0,0,0.3));
+    z-index: 10;
+}
+
+/* --- NÚT QUAY Ở GIỮA (HUB) --- */
+#centerSpinBtn {
+    position: absolute; /* Cố định theo cha (wheel-container) */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Căn chính giữa tâm */
+    
+    width: 80px; 
+    height: 80px;
+    border-radius: 50%;
+    border: 4px solid #fff; /* Viền trắng dày tạo cảm giác nổi */
+    
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+    font-weight: 900;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    z-index: 20; /* Nằm trên canvas */
+    transition: all 0.2s ease;
+}
+
+#centerSpinBtn:hover {
+    transform: translate(-50%, -50%) scale(1.15); /* Phóng to khi di chuột */
+    box-shadow: 0 0 30px rgba(255, 65, 108, 0.8);
+}
+
+#centerSpinBtn:disabled {
+    background: #555;
+    border-color: #777;
+    cursor: not-allowed;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* --- KHUNG NHẬP LIỆU --- */
+.input-area {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 25px;
+    border-radius: 20px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+label { 
+    font-weight: bold; 
+    font-size: 1.1em; 
+    background: linear-gradient(45deg, #ff512f, #dd2476);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-size: 16px;
+    resize: vertical;
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    flex: 1;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+#spinBtn { 
+    background: linear-gradient(45deg, #ff512f, #dd2476); 
+    color: white; 
+}
+#spinBtn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(221, 36, 118, 0.5); }
+#spinBtn:disabled { background: #555; transform: none; box-shadow: none; cursor: not-allowed; }
+
+#shuffleBtn { 
+    background: rgba(255,255,255,0.2); 
+    color: white; 
+    border: 1px solid rgba(255,255,255,0.4);
+}
+#shuffleBtn:hover { background: rgba(255,255,255,0.4); }
+
+/* --- POPUP KẾT QUẢ --- */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    color: #333;
+    padding: 50px;
+    border-radius: 25px;
+    text-align: center;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    max-width: 90%;
+}
+
+.winner-name {
+    font-size: 3.5em;
+    font-weight: 800;
+    background: -webkit-linear-gradient(45deg, #11998e, #38ef7d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 20px 0;
+    word-wrap: break-word;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.5) translateY(100px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .wheel-container { width: 320px; height: 320px; }
+    .pointer { right: -20px; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-right: 40px solid white; }
+    h1 { font-size: 2em; }
+    #centerSpinBtn { width: 60px; height: 60px; font-size: 12px; } /* Thu nhỏ nút trên mobile */
+}

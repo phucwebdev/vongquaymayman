@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vòng Quay May Mắn - Fixed Version</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <h1>Vòng Quay May Mắn</h1>
+
+    <div class="main-container">
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            
+            <canvas id="wheelCanvas" width="500" height="500"></canvas>
+            
+            <button id="centerSpinBtn">QUAY</button>
+        </div>
+
+        <div class="input-area">
+            <label for="namesInput">DANH SÁCH THAM GIA</label>
+            <textarea id="namesInput" placeholder="Nhập tên người tham gia...">
+12 Sử
+12 Lí
+12 Song ngữ
+12 Sinh
+12 Toán
+12 Văn
+12 Anh
+12 Hóa</textarea>
+            
+            <div class="controls">
+                <button id="shuffleBtn">Trộn tên</button>
+                <button id="spinBtn">QUAY NGAY</button>
+            </div>
+            
+            <div class="controls" style="margin-top: 10px;">
+                <button id="resetSessionBtn" style="background: #333; border: 1px solid #777;">Reset Vòng Quay</button>
+            </div>
+            <div style="font-size: 12px; color: rgba(255,255,255,0.7); text-align: center; margin-top: 5px;">
+            </div>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="margin:0; color: #555;">Người chiến thắng là</h2>
+            <div class="winner-name" id="winnerText">---</div>
+            <div class="controls" style="justify-content: center;">
+                <button onclick="closeModal()" style="background: #ccc; color: #333; max-width: 100px;">Đóng</button>
+                <button onclick="removeWinner()" style="background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; max-width: 150px;">Xóa tên này</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
