@@ -24,6 +24,15 @@ let sessionMode = 1;    // 1: Kịch bản đầu (Sử -> Lí), 2: Kịch bản
 let originalNames = [];
 let removedNames = [];
 
+// Chuẩn hóa tên: bỏ dấu, viết thường, trim để so khớp linh hoạt
+function normalizeName(str) {
+    return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
 function updateNames() {
     names = namesInput.value.split('\n').filter(n => n.trim() !== '');
     // Lưu danh sách gốc lần đầu để có thể khôi phục sau này
@@ -90,18 +99,30 @@ function spin() {
     if (sessionMode === 1) {
         if (spinCount === 0) targetName = "12 Sử";
         else if (spinCount === 1) targetName = "12 Lí";
+        // Yêu cầu: lần quay thứ 3 (spinCount === 2) -> "11 Địa" nếu có
+        else if (spinCount === 2) targetName = "11 Địa"; // nếu danh sách có
+        // Yêu cầu: lần quay thứ 4 (spinCount === 3) -> "12 Tự nhiên 2" nếu có
+        else if (spinCount === 3) targetName = "12 Tự nhiên 2"; // nếu danh sách có
     }
-    // Kịch bản 2 (Sau khi reset): Lần đầu -> 12 Song ngữ, Lần 2 -> 12 Sinh
+    // Kịch bản 2: Lần 1 -> 12 Song ngữ, Lần 2 -> 12 Sinh, Lần 3 -> Random, Lần 4 -> 12 Địa
     else if (sessionMode === 2) {
         if (spinCount === 0) targetName = "12 Song ngữ";
         else if (spinCount === 1) targetName = "12 Sinh";
+        else if (spinCount === 2) targetName = null; // Random theo yêu cầu
+        else if (spinCount === 3) targetName = "12 Địa"; // nếu danh sách có
+    }
+    // Kịch bản 3: Lần 1 -> Random, Lần 2 -> 11 Sử
+    else if (sessionMode === 3) {
+        if (spinCount === 0) targetName = null; // Random
+        else if (spinCount === 1) targetName = "11 Sử"; // nếu danh sách có
     }
 
     // Tìm vị trí của kết quả mong muốn
     let winningIndex = -1;
     if (targetName) {
         // Tìm xem tên đó có trong danh sách hiện tại không (không phân biệt hoa thường)
-        winningIndex = names.findIndex(n => n.toLowerCase().trim() === targetName.toLowerCase().trim());
+        const normTarget = normalizeName(targetName);
+        winningIndex = names.findIndex(n => normalizeName(n) === normTarget);
     }
 
     // Nếu không tìm thấy tên mong muốn (hoặc đã quay quá 2 lần), thì quay Random
@@ -166,8 +187,8 @@ function showWinner(name) {
 // Xử lý nút Reset Session (Reset kịch bản)
 resetSessionBtn.addEventListener('click', () => {
     if(isSpinning) return;
-    // Khi ấn reset: chuyển sang kịch bản 2 (12 Song ngữ -> 12 Sinh)
-    sessionMode = 2; // Chuyển về kịch bản 2
+    // Mỗi lần reset sẽ chuyển vòng kịch bản: 1 -> 2 -> 3 -> 1 ...
+    sessionMode = (sessionMode % 3) + 1;
     spinCount = 0;   // Reset bộ đếm về 0
     // Khôi phục các phần tử đã xóa (nếu có) bằng cách lấy lại danh sách gốc
     if (originalNames.length > 0) {
@@ -176,7 +197,15 @@ resetSessionBtn.addEventListener('click', () => {
         drawWheel();
         removedNames = [];
     }
-    alert("Đã Reset! \nDanh sách đã khôi phục.\nLần quay tiếp theo sẽ là: 12 Song ngữ, và lần sau đó là: 12 Sinh.");
+    let msg = "";
+    if (sessionMode === 1) {
+        msg = "Kịch bản 1: Lần 1: 12 Sử, Lần 2: 12 Lí, Lần 3: 11 Địa, Lần 4: 12 Tự nhiên 2 (nếu có).";
+    } else if (sessionMode === 2) {
+        msg = "Kịch bản 2: Lần 1: 12 Song ngữ, Lần 2: 12 Sinh, Lần 3: Random, Lần 4: 12 Địa (nếu có).";
+    } else {
+        msg = "Kịch bản 3: Lần 1: Random, Lần 2: 11 Sử (nếu có).";
+    }
+    alert("Đã Reset!\nDanh sách đã khôi phục.\n" + msg);
 });
 
 shuffleBtn.addEventListener('click', () => {
