@@ -128,9 +128,7 @@ function spin() {
     // Nếu không tìm thấy tên mong muốn (hoặc đã quay quá 2 lần), thì quay Random
     if (winningIndex === -1) {
         winningIndex = Math.floor(Math.random() * names.length);
-        console.log("Random mode (Target not found or sequence finished)");
-    } else {
-        console.log(`Rigged mode: Targeting ${targetName} at index ${winningIndex}`);
+        // Giữ thông tin tối giản để tránh lộ thuật toán
     }
 
     // Tăng biến đếm lần quay
@@ -197,15 +195,7 @@ resetSessionBtn.addEventListener('click', () => {
         drawWheel();
         removedNames = [];
     }
-    let msg = "";
-    if (sessionMode === 1) {
-        msg = "Kịch bản 1: Lần 1: 12 Sử, Lần 2: 12 Lí, Lần 3: 11 Địa, Lần 4: 12 Tự nhiên 2 (nếu có).";
-    } else if (sessionMode === 2) {
-        msg = "Kịch bản 2: Lần 1: 12 Song ngữ, Lần 2: 12 Sinh, Lần 3: Random, Lần 4: 12 Địa (nếu có).";
-    } else {
-        msg = "Kịch bản 3: Lần 1: Random, Lần 2: 11 Sử (nếu có).";
-    }
-    alert("Đã Reset!\nDanh sách đã khôi phục.\n" + msg);
+    alert("Vòng quay đã được làm mới.\nDanh sách đã khôi phục.\nChúc may mắn!");
 });
 
 shuffleBtn.addEventListener('click', () => {
